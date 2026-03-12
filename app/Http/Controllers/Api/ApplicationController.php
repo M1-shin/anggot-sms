@@ -54,6 +54,14 @@ class ApplicationController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $application = Application::findOrFail($id);
+
+        $application->update($request->all());
+
+        return response()->json([
+            'message' => 'Application updated successfully',
+            'data' => $application
+        ]);
     }
 
     /**
@@ -62,5 +70,12 @@ class ApplicationController extends Controller
     public function destroy(string $id)
     {
         //
+        $application = Application::findOrFail($id);
+
+        $application->delete();
+
+        return response()->json([
+            'message' => 'Application deleted successfully'
+        ]);
     }
 }

@@ -52,6 +52,14 @@ class ScholarshipController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $scholarship = Scholarship::findOrFail($id);
+
+        $scholarship->update($request->all());
+
+        return response()->json([
+            'message' => 'Scholarship updated successfully',
+            'data' => $scholarship
+        ]);
     }
 
     /**
@@ -60,5 +68,12 @@ class ScholarshipController extends Controller
     public function destroy(string $id)
     {
         //
+        $scholarship = Scholarship::findOrFail($id);
+
+        $scholarship->delete();
+
+        return response()->json([
+            'message' => 'Scholarship deleted successfully'
+        ]);
     }
 }
