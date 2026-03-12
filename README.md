@@ -1,80 +1,57 @@
-# Scholarship Management System
+# SCHOLARSHIP MANAGEMENT SYSTEM
 
-A system designed to manage scholarship applications, applicants, and scholarship records. The platform provides separate functionalities for **Admin** and **Student** users.
+## I. ADMIN FEATURE
 
----
-
-# Features
-
-## I. Admin Features
-
-### 1. Authentication
-Admin users can securely access the system through authentication.
-
-**Actions**
+### 1. Main Feature: Authentication
+**Actions:**
 - Register
 - Login
 - Logout
 
----
+### 2. Main Feature: Manage Applicant Data
 
-### 2. Manage Applicant Data
+**Sub-Feature: Applicant Records**
 
-#### Applicant Records
-Allows administrators to manage student applicant information.
-
-**Actions**
-- Get / Display Applicants Data
+**Actions:**
+- Get/Display Applicants Data
 - Add Applicant Data
 - Edit Applicant Data
 - Delete Applicant Data
 
----
+### 3. Main Feature: Manage Scholarship Data
 
-### 3. Manage Scholarship Data
+**Sub-Feature: Scholarship Records**
 
-#### Scholarship Records
-Allows administrators to manage available scholarships.
-
-**Actions**
-- Get / Display Scholarships Data
+**Actions:**
+- Get/Display Scholarships Data
 - Add Scholarship Data
 - Edit Scholarship Data
 - Delete Scholarship Data
 
----
+### 4. Main Feature: Manage Application Data
 
-### 4. Manage Application Data
+**Sub-Feature: Application Records**
 
-#### Application Records
-Allows administrators to review and manage scholarship applications submitted by students.
-
-**Actions**
-- Get / Display Applications Data
+**Actions:**
+- Get/Display Applications Data
 - Approve Application
 - Reject Application
 
 ---
 
-# II. Student Features
+## II. STUDENT FEATURE
 
-## 1. Authentication
-Students can create accounts and securely access the system.
-
-**Actions**
+### 1. Main Feature: Authentication
+**Actions:**
 - Register
 - Login
 - Logout
 
----
+### 2. Main Feature: Apply Scholarship
 
-## 2. Apply for Scholarship
-
-Students can view scholarships and submit applications.
-
-**Actions**
-- Get / Display Scholarship Records
+**Actions:**
+- Get/Display Scholarships Records
 - Apply for Scholarship
-- Get / Display Application Status
+- Get/Display Application Status
 - Edit Application
 - Delete Application
