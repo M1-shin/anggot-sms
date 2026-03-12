@@ -14,6 +14,7 @@ class Scholarship extends Model
         'description',
         'amount',
         'provider',
-        'requirements'
+        'requirements',
+        'slots'
     ];
 }

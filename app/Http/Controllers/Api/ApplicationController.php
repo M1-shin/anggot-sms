@@ -22,19 +22,24 @@ class ApplicationController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $application = Application::create($request->all());
+        $application = Application::create([
+            'student_id' => $request->student_id,
+            'scholarship_id' => $request->scholarship_id,
+            'application_date' => $request->application_date,
+            'status' => 'Pending',
+            'remarks' => $request->remarks
+        ]);
 
         return response()->json([
             'id' => $application->id,
             'student_id' => $application->student_id,
             'scholarship_id' => $application->scholarship_id,
             'application_date' => $application->application_date,
-            'status' => 'Pending',
+            'status' => $application->status,
             'remarks' => $application->remarks,
             'created_at' => $application->created_at,
             'updated_at' => $application->updated_at
-        ], 201);
+        ],201);
     }
 
     /**
@@ -76,6 +81,32 @@ class ApplicationController extends Controller
 
         return response()->json([
             'message' => 'Application deleted successfully'
+        ]);
+    }
+
+    public function approve($id)
+    {
+        $application = Application::findOrFail($id);
+
+        $application->status = "Approved";
+        $application->save();
+
+        return response()->json([
+            'message' => 'Application approved',
+            'data' => $application
+        ]);
+    }
+
+    public function reject($id)
+    {
+        $application = Application::findOrFail($id);
+
+        $application->status = "Rejected";
+        $application->save();
+
+        return response()->json([
+            'message' => 'Application rejected',
+            'data' => $application
         ]);
     }
 }

@@ -31,7 +31,8 @@ class ScholarshipController extends Controller
             'description' => $scholarship->description,
             'amount' => $scholarship->amount,
             'provider' => $scholarship->provider,
-            'requirements' => $scholarship->requirements
+            'requirements' => $scholarship->requirements,
+            'slots' => $scholarship->slots
         ], 201);
     }
 

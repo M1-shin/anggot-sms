@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\ScholarshipController;
 use App\Http\Controllers\Api\ApplicationController;
+use App\Http\Controllers\Api\AuthController;
 
 Route::post('/student', [StudentController::class, 'store']); 
 Route::get('/student', [StudentController::class, 'index']);  
@@ -23,6 +24,13 @@ Route::get('/application', [ApplicationController::class, 'index']);
 Route::get('/application/{id}', [ApplicationController::class, 'show']);
 Route::put('/application/{id}', [ApplicationController::class, 'update']);
 Route::delete('/application/{id}', [ApplicationController::class, 'destroy']);
+
+Route::post('/register', [AuthController::class,'register']);
+Route::post('/login', [AuthController::class,'login']);
+Route::post('/logout', [AuthController::class,'logout']);
+
+Route::put('/application/{id}/approve', [ApplicationController::class,'approve']);
+Route::put('/application/{id}/reject', [ApplicationController::class,'reject']);
 
 /*
 |--------------------------------------------------------------------------
