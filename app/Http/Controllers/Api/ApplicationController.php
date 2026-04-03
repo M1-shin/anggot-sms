@@ -58,15 +58,13 @@ class ApplicationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
-        $application = Application::findOrFail($id);
+        $application = Application::where('id', $id)
+        ->where('student_id', auth()->id())
+        ->firstOrFail();
 
         $application->update($request->all());
 
-        return response()->json([
-            'message' => 'Application updated successfully',
-            'data' => $application
-        ]);
+        return response()->json(['message' => 'Updated']);
     }
 
     /**
@@ -84,29 +82,57 @@ class ApplicationController extends Controller
         ]);
     }
 
+    public function apply(Request $request)
+    {
+        $application = Application::create([
+            'student_id' => auth()->id(),
+            'scholarship_id' => $request->scholarship_id,
+            'application_date' => now(),
+            'status' => 'Pending',
+            'remarks' => $request->remarks
+    ]);
+
+    return response()->json($application, 201);
+    }
+
     public function approve($id)
     {
-        $application = Application::findOrFail($id);
+        $app = Application::findOrFail($id);
 
-        $application->status = "Approved";
-        $application->save();
+        if ($app->status !== 'Pending') {
+            return response()->json(['message' => 'Already processed'], 400);
+        }
 
-        return response()->json([
-            'message' => 'Application approved',
-            'data' => $application
+        $app->update([
+            'status' => 'Approved',
+            'remarks' => 'Approved',
+            'approved_by' => auth()->id()
         ]);
+
+        return response()->json(['message' => 'Application Approved']);
     }
 
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
-        $application = Application::findOrFail($id);
+        $app = Application::findOrFail($id);
 
-        $application->status = "Rejected";
-        $application->save();
+        if ($app->status !== 'Pending') {
+            return response()->json(['message' => 'Already processed'], 400);
+        }
 
-        return response()->json([
-            'message' => 'Application rejected',
-            'data' => $application
+        $app->update([
+            'status' => 'Rejected',
+            'remarks' => $request->remarks ?? 'Rejected',
+            'rejected_by' => auth()->id()
         ]);
+
+        return response()->json(['message' => 'Application Rejected']);
     }
+
+    public function myApplications()
+    {
+        return Application::where('student_id', auth()->id())->get();
+    }
+
+
 }

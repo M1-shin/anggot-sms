@@ -39,7 +39,25 @@
 
 ---
 
-## II. STUDENT FEATURE
+## II. SECRETARY FEATURE
+
+### 1. Main Feature: Authentication
+**Actions:**
+- Login
+- Logout
+
+### 2. Main Feature: Manage Application Data
+
+**Sub-Feature: Application Records**
+
+**Actions:**
+- Get/Display Applications Data
+- Approve Application
+- Reject Application
+
+---
+
+## III. STUDENT FEATURE
 
 ### 1. Main Feature: Authentication
 **Actions:**

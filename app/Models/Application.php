@@ -14,6 +14,8 @@ class Application extends Model
         'scholarship_id',
         'application_date',
         'status',
-        'remarks'
+        'remarks',
+        'approved_by',
+        'rejected_by'
     ];
 }

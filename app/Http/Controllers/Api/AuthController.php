@@ -16,40 +16,39 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role
+            'role' => $request->role // admin, student, secretary
         ]);
 
-        return response()->json([
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'role' => $user->role,
-            'created_at' => $user->created_at,
-            'updated_at' => $user->updated_at
-        ]);
+        return response()->json($user);
     }
 
     public function login(Request $request)
     {
-        if(!Auth::attempt($request->only('email','password')))
-        {
-            return response()->json([
-                'message' => 'Invalid login'
-            ],401);
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
-            'message' => 'Login successful',
-            'user' => Auth::user()
+            'token' => $token,
+            'role' => $user->role
         ]);
     }
-
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::logout();
+        if (!$request->user()) {
+            return response()->json([
+                'message' => 'Unauthenticated'
+            ], 401);
+        }
+
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Logged out'
+            'message' => 'Logged out successfully'
         ]);
     }
 }
