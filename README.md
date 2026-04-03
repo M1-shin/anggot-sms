@@ -65,11 +65,15 @@
 - Login
 - Logout
 
-### 2. Main Feature: Apply Scholarship
+### 2. Main Feature: Scholarship
 
 **Actions:**
-- Get/Display Scholarships Records
-- Apply for Scholarship
-- Get/Display Application Status
-- Edit Application
-- Delete Application
+- GET Scholarship
+
+### 3. Main Feature: Application
+
+**Actions:**
+- POST Apply Scholarship
+- GET My Applications
+- PUT Update Application
+- DELETE Application
