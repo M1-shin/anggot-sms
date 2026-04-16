@@ -18,4 +18,8 @@ class Application extends Model
         'approved_by',
         'rejected_by'
     ];
+    public function student()
+{
+    return $this->belongsTo(Student::class);
+}
 }

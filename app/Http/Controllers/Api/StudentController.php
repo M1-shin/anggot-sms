@@ -22,32 +22,34 @@ class StudentController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //
-        $student = Student::create($request->all());
+{
+        $student = Student::create([
+            'user_id' => auth()->id(),
+
+            'last_name' => $request->last_name,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+
+            'date_of_birth' => $request->date_of_birth,
+            'sex' => $request->sex,
+
+            'email' => $request->email,
+            'mobile_number' => $request->mobile_number,
+            'address' => $request->address,
+
+            'school_name' => $request->school_name,
+            'course' => $request->course,
+            'year_level' => $request->year_level,
+
+            'father_name' => $request->father_name,
+            'mother_name' => $request->mother_name,
+            'parent_occupation' => $request->parent_occupation,
+            'parents_gross_income' => $request->parents_gross_income,
+        ]);
 
         return response()->json([
-            'id' => $student->id,
-
-            'last_name' => $student->last_name,
-            'first_name' => $student->first_name,
-            'middle_name' => $student->middle_name,
-
-            'date_of_birth' => $student->date_of_birth,
-            'sex' => $student->sex,
-
-            'email' => $student->email,
-            'mobile_number' => $student->mobile_number,
-            'address' => $student->address,
-
-            'school_name' => $student->school_name,
-            'course' => $student->course,
-            'year_level' => $student->year_level,
-
-            'father_name' => $student->father_name,
-            'mother_name' => $student->mother_name,
-            'parent_occupation' => $student->parent_occupation,
-            'parents_gross_income' => $student->parents_gross_income,
+            'message' => 'Student created successfully',
+            'data' => $student
         ], 201);
     }
 

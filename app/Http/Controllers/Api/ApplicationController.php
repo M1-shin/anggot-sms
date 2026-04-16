@@ -5,76 +5,92 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Application;
+use App\Models\Student;
 
 class ApplicationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
-        return Application::all();
+        //Show all applications WITH student info
+        return Application::with('student')->get();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
+        $student = Student::create([
+            'user_id' => $request->user_id,
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
         $application = Application::create([
-            'student_id' => $request->student_id,
+            'student_id' => $student->id,
             'scholarship_id' => $request->scholarship_id,
-            'application_date' => $request->application_date,
-            'status' => 'Pending',
-            'remarks' => $request->remarks
+            'application_date' => now(),
+            'status' => 'pending',
         ]);
 
         return response()->json([
-            'id' => $application->id,
-            'student_id' => $application->student_id,
-            'scholarship_id' => $application->scholarship_id,
-            'application_date' => $application->application_date,
-            'status' => $application->status,
-            'remarks' => $application->remarks,
-            'created_at' => $application->created_at,
-            'updated_at' => $application->updated_at
-        ],201);
+            'message' => 'Created',
+            'data' => $application->load('student')
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
-        $application = Application::findOrFail($id);
+        $application = Application::with('student')->findOrFail($id);
 
         return response()->json($application);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
-    {
-        $application = Application::where('id', $id)
-        ->where('student_id', auth()->id())
-        ->firstOrFail();
+{
+    $user = auth()->user();
 
-        $application->update($request->all());
-
-        return response()->json(['message' => 'Updated']);
+    if (!$user || !$user->student) {
+        return response()->json([
+            'message' => 'Student record not found'
+        ], 404);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    $student = $user->student;
+
+    $student->update([
+        'last_name' => $request->last_name ?? $student->last_name,
+        'first_name' => $request->first_name ?? $student->first_name,
+        'middle_name' => $request->middle_name ?? $student->middle_name,
+        'date_of_birth' => $request->date_of_birth ?? $student->date_of_birth,
+        'sex' => $request->sex ?? $student->sex,
+        'email' => $request->email ?? $student->email,
+        'mobile_number' => $request->mobile_number ?? $student->mobile_number,
+        'address' => $request->address ?? $student->address,
+        'school_name' => $request->school_name ?? $student->school_name,
+        'course' => $request->course ?? $student->course,
+        'year_level' => $request->year_level ?? $student->year_level,
+        'father_name' => $request->father_name ?? $student->father_name,
+        'mother_name' => $request->mother_name ?? $student->mother_name,
+        'parent_occupation' => $request->parent_occupation ?? $student->parent_occupation,
+        'parents_gross_income' => $request->parents_gross_income ?? $student->parents_gross_income,
+    ]);
+
+    $application = Application::where('id', $id)
+        ->where('student_id', $student->id)
+        ->firstOrFail();
+
+    $application->update([
+        'scholarship_id' => $request->scholarship_id ?? $application->scholarship_id,
+        'status' => $request->status ?? $application->status,
+    ]);
+
+    return response()->json([
+        'message' => 'Updated successfully',
+        'data' => $application->load('student')
+    ]);
+}
+
     public function destroy(string $id)
     {
-        //
         $application = Application::findOrFail($id);
-
         $application->delete();
 
         return response()->json([
@@ -83,16 +99,81 @@ class ApplicationController extends Controller
     }
 
     public function apply(Request $request)
-    {
-        $application = Application::create([
-            'student_id' => auth()->id(),
-            'scholarship_id' => $request->scholarship_id,
-            'application_date' => now(),
-            'status' => 'Pending',
-            'remarks' => $request->remarks
+{
+    $user = auth()->user();
+
+    if (!$user) {
+        return response()->json([
+            'message' => 'Unauthorized'
+        ], 401);
+    }
+
+    $request->validate([
+        'last_name' => 'required',
+        'first_name' => 'required',
+        'date_of_birth' => 'required|date',
+        'sex' => 'required',
+        'email' => 'required|email',
+        'mobile_number' => 'required',
+        'address' => 'required',
+        'school_name' => 'required',
+        'course' => 'required',
+        'year_level' => 'required',
+        'father_name' => 'required',
+        'mother_name' => 'required',
+        'parent_occupation' => 'required',
+        'parents_gross_income' => 'required|numeric',
+        'scholarship_id' => 'required'
     ]);
 
-    return response()->json($application, 201);
+    $student = Student::updateOrCreate(
+        ['user_id' => $user->id],
+        [
+            'user_id' => $user->id, 
+            'last_name' => $request->last_name,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'date_of_birth' => $request->date_of_birth,
+            'sex' => $request->sex,
+            'email' => $request->email,
+            'mobile_number' => $request->mobile_number,
+            'address' => $request->address,
+            'school_name' => $request->school_name,
+            'course' => $request->course,
+            'year_level' => $request->year_level,
+            'father_name' => $request->father_name,
+            'mother_name' => $request->mother_name,
+            'parent_occupation' => $request->parent_occupation,
+            'parents_gross_income' => $request->parents_gross_income,
+        ]
+    );
+
+    $application = Application::create([
+        'student_id' => $student->id,
+        'scholarship_id' => $request->scholarship_id,
+        'application_date' => now(),
+        'status' => 'pending',
+    ]);
+
+    return response()->json([
+        'message' => 'Application submitted',
+        'data' => $application->load('student')
+    ], 201);
+}
+
+    public function myApplications()
+    {
+        $user = auth()->user();
+
+        if (!$user || !$user->student) {
+            return response()->json([
+                'message' => 'Student record not found'
+            ], 404);
+        }
+
+        return Application::with('student')
+            ->where('student_id', $user->student->id)
+            ->get();
     }
 
     public function approve($id)
@@ -127,11 +208,6 @@ class ApplicationController extends Controller
         ]);
 
         return response()->json(['message' => 'Application Rejected']);
-    }
-
-    public function myApplications()
-    {
-        return Application::where('student_id', auth()->id())->get();
     }
 
 

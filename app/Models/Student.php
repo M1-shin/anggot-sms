@@ -10,6 +10,7 @@ class Student extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'last_name',
         'first_name',
         'middle_name',
@@ -26,4 +27,14 @@ class Student extends Model
         'parent_occupation',
         'parents_gross_income'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+ 
+    public function applications()
+    {
+        return $this->hasMany(Application::class, 'applicant_id', 'student_id');
+    }
+
 }

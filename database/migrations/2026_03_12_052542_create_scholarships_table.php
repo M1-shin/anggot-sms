@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('provider'); 
             $table->text('requirements')->nullable();
 
+            $table->unsignedInteger('slots'); 
+            $table->unsignedInteger('remaining_slots'); 
+
             $table->timestamps();
         });
     }
